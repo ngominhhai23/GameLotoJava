@@ -340,8 +340,14 @@ public class Table {
 		return tb;
 	}
 
-// Phương thức bắt đầu trò chơi tartGame(int[][] arr)
+// Phương thức bắt đầu trò chơi startGame(int[][] arr)
 	private static void startGame(int[][] arr) {
+		int[][] winArr = new int[9][5];
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 5; j++) {
+				winArr[i][j] = arr[i][j];
+			}
+		}
 		boolean endGame = false;
 		int[] checkNumberInArr = null;
 		while (endGame == false) {
@@ -363,10 +369,11 @@ public class Table {
 				}
 			}
 			// check arr và gán giá trị = 0
-			boolean kinh = kiemTraKinh(arr, number, checkNumberInArr);
-			if (kinh == true) {
+			int kinh = kiemTraKinh(arr, number, checkNumberInArr);
+			if (kinh != 10) {
 				endGame = true;
-				System.out.println("Kinh! Lụm tiền.");
+				System.out.println("KINH! LỤM TIỀN.");
+				printNumberSequence(winArr, kinh);
 			}
 
 		}
@@ -388,8 +395,8 @@ public class Table {
 
 	// Phương thức kiểm tra đã kinh hay chưa, dựa vào tổng giá trị trên 1 row vừa
 	// được nhập số
-	public static boolean kiemTraKinh(int[][] arr, int number, int[] checkNumberInArr) {
-		boolean result = false;
+	public static int kiemTraKinh(int[][] arr, int number, int[] checkNumberInArr) {
+		int result = 10;
 		int tong = 0;
 		int row = checkNumberInArr[0];
 		int column = checkNumberInArr[1];
@@ -403,11 +410,26 @@ public class Table {
 		// kiểm tra đã kinh hay chưa, xét tổng 5 phần tử của 1 dòng, nếu bằng 0 thì
 		// kinh, in ra màn hình, chưa bằng 0 thì tiếp tục
 		if (tong == 0) {
-			result = true;
+			result = row;
 		}
 		return result;
 	}
 
+// Phương thức hiển thị ra dãy số đã Kinh, kiểm tra dãy số lúc kinh và lưu lại vào 1 mảng số int
+	private static void printNumberSequence(int[][] winArr, int row) {
+		int count = 0;
+		System.out.print("Dãy số vừa KINH lần lượt là:" + "\t");
+		for (int i = 0; i < 5; i++) {
+			if (count == 5) {
+				System.out.print(winArr[row][i]);
+			} else {
+				count++;
+				System.out.print(winArr[row][i] + "\t");
+			}
+		}
+	}
+
+// Phương thức dò 2 bảng?
 	public static void main(String[] args) {
 		int[][] tb = getTable();
 		printTable(tb);

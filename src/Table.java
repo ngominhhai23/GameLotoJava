@@ -61,7 +61,7 @@ public class Table {
 			}
 			// TH2: 2 tờ
 			// list add 2 mảng int[]
-			else if (number >= 132916 && number <= 19281822) {
+			else if (number == 2) {
 				list.add(tb1);
 				list.add(tb2);
 				break;
@@ -111,7 +111,7 @@ public class Table {
 			do {
 				System.out.println(inputNumberGetTable);
 				input = scanner.nextInt();
-				switch (number) {
+				switch (input) {
 				case 1935716:
 					arr1 = arr1935;
 					arr2 = arr716;
@@ -179,22 +179,17 @@ public class Table {
 				default:
 					continue;
 				}
-			} while (true);
+			} while (arr1 == null && arr2 == null);
 			for (int[][] x : list) {
 				for (int i = 0; i < 9; i++) {
 					for (int j = 0; j < 5; j++) {
-						if (count == 1) {
-							x[i][j] = arr1[index];
-						} else {
-							x[i][j] = arr2[index];
-						}
+						x[i][j] = count == 1 ? arr1[index] : arr2[index];
 						index++;
 					}
 				}
 				count++;
 				index = 0;
 			}
-
 		}
 		return list;
 	}
@@ -211,142 +206,80 @@ public class Table {
 				System.out.println();
 			}
 			count++;
-			System.out.println();
 		}
 	}
 
 // startGame bắt đầu trò chơi
-	static void startGame(int[][] arr) {
-		// endGame = true thì dừng trò chơi
-		boolean endGame = false;
-		// checkInput = true nếu số vừa nhập hợp lệ
-		boolean checkInput = false;
-		int[] checkNumberInArr = null;
+	static void startGame(List<int[][]> list) {
+		int[] checkNumberInTable = null;
 		int number;
-		String enterNumber = "Enter a number:";
-		// tạo ra mảng winArr mới để lấy dãy số đã win in ra màn hình
-		int[][] winArr = new int[9][5];
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 5; j++) {
-				winArr[i][j] = arr[i][j];
+		String enterNumber = "Nhập số:";
+
+		// tạo một danh sách mới winList để lấy dãy số đã win in ra màn hình
+		List<int[][]> winList = new ArrayList<int[][]>();
+		// TH1: list chỉ chứa 1 mảng int[][]
+		if (list.size() == 1) {
+			int[][] tb1 = list.get(0);
+			int[][] winTb1 = new int[9][5];
+			for (int i = 0; i < 9; i++) {
+				for (int j = 0; j < 5; j++) {
+					winTb1[i][j] = tb1[i][j];
+				}
 			}
+			winList.add(winTb1);
+		} // TH2: list chứa 2 mảng int[][]
+		else {
+			int count = 0;
+			int[][] tb1 = list.get(0);
+			int[][] tb2 = list.get(1);
+			int[][] winTb1 = new int[9][5];
+			int[][] winTb2 = new int[9][5];
+			do {
+				for (int i = 0; i < 9; i++) {
+					for (int j = 0; j < 5; j++) {
+						if (count == 0) {
+							winTb1[i][j] = tb1[i][j];
+						} else {
+							winTb2[i][j] = tb2[i][j];
+						}
+					}
+				}
+				count++;
+			} while (count < 2);
+			winList.add(winTb1);
+			winList.add(winTb2);
 		}
 		do {
 			do {
 				// Nhập số
 				System.out.println(enterNumber);
 				number = scanner.nextInt();
+				if (number <= 0 || number > 89)
+					continue;
 				// Kiểm tra số vừa nhập vào, không hợp lệ thì quay lại bước nhập số
-				checkNumberInArr = checkNumberInArr(arr, number);
-				checkInput = (number <= 0 || number > 89) || checkNumberInArr == null ? false : true;
-			} while (checkInput == false);
-			// kiểm tra win và gán giá trị cho biến win
-			int win = checkWin(arr, checkNumberInArr);
-			// nếu win khác 10 thì trò chơi kết thúc,
-			if (win != 10) {
-				endGame = true;
-				System.out.println("WIN");
-				// sau đó in dãy số đã win ra màn hình
-				printNumberSequence(winArr, win);
-			}
-		} while (endGame == false);
-	}
-
-	// kiểm tra số vừa nhập có nằm trong table hay không
-	private static int[] checkNumberInArr(int[][] arr, int number) {
-		int[] result = new int[2];
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 5; j++) {
-				if (number == arr[i][j]) {
-					result[0] = i;
-					result[1] = j;
+				checkNumberInTable = checkNumberInTable(list, number);
+				if (checkNumberInTable == null)
+					continue;
+				else {
 					break;
 				}
-			}
-		}
-		return result;
-	}
-
-	// checkWin kiểm tra xem đã win hay chưa, xét theo tổng số của một hàng
-	public static int checkWin(int[][] arr, int[] checkNumberInArr) {
-		int result = 10;
-		int total = 0;
-		int row = checkNumberInArr[0];
-		int column = checkNumberInArr[1];
-		// gán giá trị 0 cho vị trí số vừa nhập
-		arr[row][column] = 0;
-		// in table để xem lại
-		printTable(arr);
-		for (int j = 0; j < 5; j++) {
-			total += arr[row][j];
-		}
-		// nếu tổng của 1 hàng = 0 thì giá trị int trả về bằng với row
-		result = total == 0 ? row : result;
-		return result;
-	}
-
-	// in dãy số win ra màn hình
-	private static void printNumberSequence(int[][] winArr, int row) {
-		System.out.print("The winning numbers are:" + "\t");
-		for (int i = 0; i < 5; i++) {
-			System.out.print(winArr[row][i] + "\t");
-		}
-	}
-
-	// Game start method
-	static void start(List<int[][]> list) {
-		int[][] win1 = new int[9][5];
-		int[][] win2 = new int[9][5];
-		List<int[][]> winList = new ArrayList<int[][]>();
-		winList.add(win1);
-		winList.add(win2);
-		// assign value to new array, new list
-		int[][] ar1 = list.get(0);
-		int[][] ar2 = list.get(1);
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 5; j++) {
-				win1[i][j] = ar1[i][j];
-			}
-		}
-		for (int i = 0; i < 9; i++) {
-			for (int j = 0; j < 5; j++) {
-				win2[i][j] = ar2[i][j];
-			}
-		}
-
-		boolean endGame = false;
-		int[] checkNumber = null;
-		int[] win;
-		while (endGame == false) {
-			int number = 0;
-			boolean check = false;
-			while (check == false) {
-				// Enter a number
-				System.out.println("Nhập số:");
-				number = scanner.nextInt();
-				// Check the input value, if it is not valid, return to enter the number
-				checkNumber = checkNumber(list, number);
-				if ((number <= 0 || number > 89) || checkNumber == null) {
-					check = false;
-				} else {
-					break;
-				}
-			}
-			// check numbers and assign value equal to 0
-			win = winCheck(list, checkNumber);
+			} while (true);
+//			// kiểm tra win và gán giá trị cho biến win
+			int[] win = winCheck(list, checkNumberInTable);
+			// kiểm tra điều kiện win, in kết quả ra màn hình nếu win
 			if (win[0] != 2) {
-				endGame = true;
 				System.out.println("KINH! LỤM TIỀN.");
-				int[][] result = winList.get(win[0]);
-				printWinNumbers(result, win[1]);
+				printWinNumbers(winList.get(win[0]), win[1]);
+				break;
 			}
-
-		}
+		} while (true);
 	}
 
-// Phương thức checkNumber kiểm tra xem có tồn tại giá trị number trong list đang xét hay không
-// Return một mảng int độ dài 3, chứa lần lượt vị trí của mảng trong list,số dòng và số cột trong mảng đó.
-	private static int[] checkNumber(List<int[][]> list, int number) {
+	// Phương thức checkNumber kiểm tra xem có tồn tại giá trị number trong list
+	// đang xét hay không
+	// Return một mảng int độ dài 3, chứa lần lượt vị trí của mảng trong list,số
+	// dòng và số cột trong mảng đó.
+	private static int[] checkNumberInTable(List<int[][]> list, int number) {
 		int[] result = new int[3];
 		int count = 0;
 		for (int[][] x : list) {
@@ -356,38 +289,42 @@ public class Table {
 						result[0] = count;
 						result[1] = i;
 						result[2] = j;
-						break;
+						return result;
 					}
 				}
 			}
 			count++;
 		}
+		result = null;
 		return result;
 	}
 
-	// Phương thức kiểm tra đã kinh hay chưa, dựa vào tổng giá trị trên 1 row vừa
-	// được nhập số
+//	// Phương thức kiểm tra đã kinh hay chưa, dựa vào tổng giá trị trên 1 row vừa
+//	// được nhập số
 	public static int[] winCheck(List<int[][]> list, int[] checkNumber) {
 		// mảng int trả về chứa lần lượt là số thứ tự trong list và số dòng trong mảng
 		int[] result = { 2, 0 };
 		int total = 0;
+
 		// position là vị trí trong list
 		int position = checkNumber[0];
 		int row = checkNumber[1];
 		int column = checkNumber[2];
-		// Set value 0
+
+		// gán giá trị trong table = 0
 		int[][] checkArr = list.get(position);
 		checkArr[row][column] = 0;
 		list.set(position, checkArr);
 
-		// Print table for review
-		printTwoTable(list);
-		// Calculate the sum of a row
+		// in table để xem lại
+		printTable(list);
+
+		// tính tổng trên 1 dòng vừa nhập
 		for (int i = 0; i < 5; i++) {
 			total += checkArr[row][i];
 		}
-		// check win or not, calculate the sum of 5 elements of a row,
-		// equal 0 to win, print out to console, is not equal 0 then continue
+		// nếu tổng bằng 0 thì win, gán lại các giá trị position và row vào trong mảng
+		// int trả về
 		if (total == 0) {
 			result[0] = position;
 			result[1] = row;
@@ -395,19 +332,11 @@ public class Table {
 		return result;
 	}
 
-	// Method to display a series of numbers in the period,
-	// check the sequence of numbers during the period and save it in an Integer
-	// array
+	// in dãy số win ra màn hình
 	private static void printWinNumbers(int[][] winArr, int row) {
-		int count = 0;
 		System.out.print("Dãy số vừa KINH lần lượt là:" + "\t");
 		for (int i = 0; i < 5; i++) {
-			if (count == 5) {
-				System.out.print(winArr[row][i]);
-			} else {
-				count++;
-				System.out.print(winArr[row][i] + "\t");
-			}
+			System.out.print(winArr[row][i] + "\t");
 		}
 	}
 }

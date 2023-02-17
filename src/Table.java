@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Table {
+	
 	static Scanner scanner = new Scanner(System.in);
 	static int[] arr1935 = { 19, 35, 49, 71, 85, 8, 14, 47, 54, 74, 6, 25, 36, 62, 84, 15, 22, 58, 7, 89, 12, 31, 43,
 			68, 9, 1, 42, 65, 72, 87, 5, 21, 38, 52, 76, 13, 33, 57, 67, 82, 11, 26, 44, 69, 79 };
@@ -38,7 +39,6 @@ public class Table {
 			66, 71, 18, 26, 57, 70, 88, 88, 25, 33, 52, 62, 9, 35, 46, 60, 73, 10, 27, 48, 59, 86 };
 
 //	getTable trả về mảng int 2 chiều để bắt đầu trò chơi
-
 	static List<int[][]> getTable() {
 		List<int[][]> list = new ArrayList<int[][]>();
 		int[][] tb1 = new int[9][5];
@@ -51,7 +51,7 @@ public class Table {
 		String inputNumberOfTable = "Chơi 1 tờ hay 2 tờ(nhập 1 hoặc 2):";
 
 		do {
-			System.out.println(inputNumberOfTable);
+			System.out.print(inputNumberOfTable);
 			number = scanner.nextInt();
 			// TH1: 1 tờ
 			// list add 1 mảng int[]
@@ -72,8 +72,8 @@ public class Table {
 		if (list.size() == 1) {
 			int[] arr = null;
 			inputNumberGetTable = "Nhập vào 2 số đầu tiên của bảng (ví dụ như 1935):";
-			while (checkInput == false) {
-				System.out.println(inputNumberGetTable);
+			do {
+				System.out.print(inputNumberGetTable);
 				input = scanner.nextInt();
 				arr = switch (input) {
 				case 1935 -> arr1935;
@@ -95,7 +95,7 @@ public class Table {
 				default -> arr;
 				};
 				checkInput = arr == null ? false : true;
-			}
+			} while (checkInput == false);
 			for (int i = 0; i < 9; i++) {
 				for (int j = 0; j < 5; j++) {
 					tb1[i][j] = arr[index];
@@ -109,7 +109,7 @@ public class Table {
 			int count = 1;
 			inputNumberGetTable = "Nhập vào 2 số đầu tiên của 2 bảng (ví dụ như 1935716 hoặc 7161935):";
 			do {
-				System.out.println(inputNumberGetTable);
+				System.out.print(inputNumberGetTable);
 				input = scanner.nextInt();
 				switch (input) {
 				case 1935716:
@@ -217,6 +217,7 @@ public class Table {
 
 		// tạo một danh sách mới winList để lấy dãy số đã win in ra màn hình
 		List<int[][]> winList = new ArrayList<int[][]>();
+
 		// TH1: list chỉ chứa 1 mảng int[][]
 		if (list.size() == 1) {
 			int[][] tb1 = list.get(0);
@@ -252,7 +253,7 @@ public class Table {
 		do {
 			do {
 				// Nhập số
-				System.out.println(enterNumber);
+				System.out.print(enterNumber);
 				number = scanner.nextInt();
 				if (number <= 0 || number > 89)
 					continue;
@@ -268,7 +269,7 @@ public class Table {
 			int[] win = winCheck(list, checkNumberInTable);
 			// kiểm tra điều kiện win, in kết quả ra màn hình nếu win
 			if (win[0] != 2) {
-				System.out.println("KINH! LỤM TIỀN.");
+				System.out.println("KINH!");
 				printWinNumbers(winList.get(win[0]), win[1]);
 				break;
 			}
@@ -332,9 +333,9 @@ public class Table {
 		return result;
 	}
 
-	// in dãy số win ra màn hình
+	// printWinNumbers in dãy số win ra màn hình
 	private static void printWinNumbers(int[][] winArr, int row) {
-		System.out.print("Dãy số vừa KINH lần lượt là:" + "\t");
+		System.out.print("Dãy số vừa KINH là:" + "\t");
 		for (int i = 0; i < 5; i++) {
 			System.out.print(winArr[row][i] + "\t");
 		}
